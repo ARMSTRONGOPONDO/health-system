@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Client - Health Information System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Add New Client</h2>
+    </div>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="id_number">ID Number</label>
+            <input type="text" id="id_number" name="id_number" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="date_of_birth">Date of Birth</label>
+            <input type="date" id="date_of_birth" name="date_of_birth" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" class="form-control" required>
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="contact">Contact Number</label>
+            <input type="text" id="contact" name="contact" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <textarea id="address" name="address" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Client</button>
+        <a href="{{ url_for('clients') }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+{% endblock %}

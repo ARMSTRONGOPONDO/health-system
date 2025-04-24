@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Enroll Client - Health Information System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Enroll Client in Program</h2>
+    </div>
+    
+    <div class="profile-info" style="margin-bottom: 20px;">
+        <div>
+            <div class="info-item">
+                <div class="info-label">Client Name</div>
+                <div class="info-value">{{ client['name'] }}</div>
+            </div>
+        </div>
+        <div>
+            <div class="info-item">
+                <div class="info-label">ID Number</div>
+                <div class="info-value">{{ client['id_number'] }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="program_id">Health Program</label>
+            <select id="program_id" name="program_id" class="form-control" required>
+                <option value="">Select Program</option>
+                {% for program in programs %}
+                <option value="{{ program['id'] }}">{{ program['name'] }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="enrollment_date">Enrollment Date</label>
+            <input type="date" id="enrollment_date" name="enrollment_date" class="form-control" value="{{ today }}" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Enroll Client</button>
+        <a href="{{ url_for('view_client', id=client['id']) }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+{% endblock %}

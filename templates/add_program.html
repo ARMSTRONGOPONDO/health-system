@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Health Program - Health Information System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Add Health Program</h2>
+    </div>
+    
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Program Name</label>
+            <input type="text" id="name" name="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" class="form-control" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Program</button>
+        <a href="{{ url_for('programs') }}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>
+{% endblock %}

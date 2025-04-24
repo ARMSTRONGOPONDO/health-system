@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Health Programs - Health Information System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Health Programs</h2>
+        <a href="{{ url_for('add_program') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Program
+        </a>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for program in programs %}
+            <tr>
+                <td>{{ program['id'] }}</td>
+                <td>{{ program['name'] }}</td>
+                <td>{{ program['description'] }}</td>
+                <td>
+                    <a href="{{ url_for('edit_program', id=program['id']) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No programs found. <a href="{{ url_for('add_program') }}">Add one</a>.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

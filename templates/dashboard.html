@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Health Information System{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="stats-container">
+    <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="stat-value">{{ clients_count }}</div>
+        <div class="stat-label">Total Clients</div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-clipboard-list"></i>
+        <div class="stat-value">{{ programs_count }}</div>
+        <div class="stat-label">Health Programs</div>
+    </div>
+    <div class="stat-card">
+        <i class="fas fa-user-plus"></i>
+        <div class="stat-value">{{ enrollments_count }}</div>
+        <div class="stat-label">Program Enrollments</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Quick Actions</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        <a href="{{ url_for('add_client') }}" class="btn btn-primary" style="text-align: center; text-decoration: none;">
+            <i class="fas fa-user-plus"></i> Add New Client
+        </a>
+        <a href="{{ url_for('add_program') }}" class="btn btn-primary" style="text-align: center; text-decoration: none;">
+            <i class="fas fa-plus-circle"></i> Create Health Program
+        </a>
+        <a href="{{ url_for('clients') }}" class="btn btn-primary" style="text-align: center; text-decoration: none;">
+            <i class="fas fa-search"></i> Search Clients
+        </a>
+    </div>
+</div>
+{% endblock %}

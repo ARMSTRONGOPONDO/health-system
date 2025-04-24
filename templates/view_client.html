@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Profile - Health Information System{% endblock %}
+
+{% block content %}
+<div class="profile-header">
+    <h1>Client Profile</h1>
+    <div class="profile-actions">
+        <a href="{{ url_for('enroll_client', id=client['id']) }}" class="btn btn-primary">
+            <i class="fas fa-plus-circle"></i> Enroll in Program
+        </a>
+        <a href="{{ url_for('clients') }}" class="btn btn-danger">
+            <i class="fas fa-arrow-left"></i> Back to Clients
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Personal Information</h2>
+    </div>
+    
+    <div class="profile-info">
+        <div>
+            <div class="info-item">
+                <div class="info-label">Full Name</div>
+                <div class="info-value">{{ client['name'] }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">ID Number</div>
+                <div class="info-value">{{ client['id_number'] }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Date of Birth</div>
+                <div class="info-value">{{ client['date_of_birth'] }}</div>
+            </div>
+        </div>
+        <div>
+            <div class="info-item">
+                <div class="info-label">Gender</div>
+                <div class="info-value">{{ client['gender'] }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Contact</div>
+                <div class="info-value">{{ client['contact'] or 'Not provided' }}</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Address</div>
+                <div class="info-value">{{ client['address'] or 'Not provided' }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Program Enrollments</h2>
+    </div>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Enrollment Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enrollment in enrollments %}
+            <tr>
+                <td>{{ enrollment['name'] }}</td>
+                <td>{{ enrollment['enrollment_date'] }}</td>
+                <td>
+                    <span class="badge {% if enrollment['status'] == 'Active' %}badge-success{% else %}badge-danger{% endif %}">
+                        {{ enrollment['status'] }}
+                    </span>
+                </td>
+                <td>
+                    <form method="post" action="{{ url_for('update_enrollment', id=enrollment['id']) }}" style="display: inline;">
+                        <select name="status" onchange="this.form.submit()" class="form-control" style="width: auto;">
+                            <option value="Active" {% if enrollment['status'] == 'Active' %}selected{% endif %}>Active</option>
+                            <option value="Inactive" {% if enrollment['status'] == 'Inactive' %}selected{% endif %}>Inactive</option>
+                            <option value="Completed" {% if enrollment['status'] == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" style="text-align: center;">No program enrollments found. <a href="{{ url_for('enroll_client', id=client['id']) }}">Enroll in a program</a>.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
