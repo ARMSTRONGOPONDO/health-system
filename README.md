@@ -25,3 +25,9 @@ Technology Stack
     Backend: Flask (Python)
     Database: SQLite
     Frontend: HTML, CSS, JavaScript
+
+
+    flask init-db to initialize the database in the commandline
+    python -m venv venv to create a venv
+    source venv/bin/activate to activate the enviroment
+    run health-system/app.py
