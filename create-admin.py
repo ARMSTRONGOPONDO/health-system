@@ -12,7 +12,7 @@ api_key = secrets.token_hex(16)
 # Create a new admin user with password 'admin123'
 username = 'admin'
 password = 'admin123'  # Simple password for testing
-password_hash = generate_password_hash(password)
+password_hash = generate_password_hash(password, method='pbkdf2:sha256')
 
 # First, check if the admin user already exists
 cursor.execute('SELECT id FROM users WHERE username = ?', (username,))
