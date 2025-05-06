@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session, g
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 import sqlite3
 import os
 from functools import wraps
@@ -87,9 +88,9 @@ def login():
         
         if user is None:
             error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
+        elif not check_password_hash(hashed_password_from_db, login_attempt_password):
             error = 'Incorrect password.'
-        
+            
         if error is None:
             session.clear()
             session['user_id'] = user['id']
