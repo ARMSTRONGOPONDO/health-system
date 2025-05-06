@@ -75,18 +75,41 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
+# Add this function to your app.py file
+def get_user_by_username(username):
+    """
+    Retrieve a user from the database by username
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
+    user = cursor.fetchone()
+    conn.close()
+    
+    if user:
+        # Convert to dictionary for easier access
+        user_dict = {
+            'id': user[0],
+            'username': user[1],
+            'password': user[2],
+            'is_admin': user[3]
+        }
+        return user_dict
+    return None
+
 # When generating password hashes, specify the method:
 def generate_password():
     # Use pbkdf2:sha256 instead of scrypt
     return generate_password_hash(password, method='pbkdf2:sha256')
 
-# Updated your login function to handle potential hash method issues
+# Update your login function to handle potential hash method issues
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         
+        # Use get_user_by_username function
         user = get_user_by_username(username)
         
         if not user:
@@ -113,6 +136,7 @@ def login():
         return redirect(url_for('dashboard'))
         
     return render_template('login.html')
+
 
 
 @app.route('/logout')
