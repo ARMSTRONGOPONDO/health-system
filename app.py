@@ -75,30 +75,45 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
+# When generating password hashes, specify the method:
+def generate_password():
+    # Use pbkdf2:sha256 instead of scrypt
+    return generate_password_hash(password, method='pbkdf2:sha256')
+
+# Updated your login function to handle potential hash method issues
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
-        error = None
         
-        user = db.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+        user = get_user_by_username(username)
         
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+        if not user:
+            flash('Invalid username or password', 'danger')
+            return render_template('login.html')
         
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            session['username'] = user['username']
-            return redirect(url_for('dashboard'))
+        try:
+            # Try to check the password hash
+            password_correct = check_password_hash(user['password'], password)
+        except ValueError as e:
+            # If there's an error with the hash format, log it and return an error
+            app.logger.error(f"Password hash error: {str(e)}")
+            flash('Authentication error. Please contact an administrator.', 'danger')
+            return render_template('login.html')
+            
+        if not password_correct:
+            flash('Invalid username or password', 'danger')
+            return render_template('login.html')
+            
+        # Create a user object for Flask-Login
+        user_obj = User(user['id'], user['username'])
+        login_user(user_obj)
         
-        flash(error, 'error')
-    
+        return redirect(url_for('dashboard'))
+        
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
