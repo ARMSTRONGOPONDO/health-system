@@ -58,9 +58,6 @@ def initialize_database():
         except Exception as e:
             logging.error(f"Unexpected error while ensuring default users: {e}")
 
-# Initialize the database
-initialize_database()
-
 def add_default_users(conn):
     """
     Add default testing users to the database if they do not already exist.
@@ -82,6 +79,8 @@ def add_default_users(conn):
     except sqlite3.Error as db_error:
         logging.error(f"Error adding default users: {db_error}")
         
+# Initialize the database
+initialize_database()
 
 def get_db():
     """Get a database connection."""
