@@ -24,7 +24,7 @@ logging.basicConfig(level=logging.INFO)
 def initialize_database():
     """
     Initialize the SQLite database if it doesn't exist by applying the schema
-    and creating default users.
+    and creating default users. If it already exists, ensure default users exist.
     """
     if not os.path.exists(DATABASE):
         logging.info("Database not found. Initializing...")
@@ -38,20 +38,25 @@ def initialize_database():
                     schema = schema_file.read()
                 conn.executescript(schema)
                 logging.info("Database initialized successfully!")
-                
+
                 # Add default users
                 add_default_users(conn)
+
         except FileNotFoundError as fnf_error:
             logging.error(f"Error: {fnf_error}")
         except sqlite3.Error as db_error:
             logging.error(f"SQLite error: {db_error}")
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
-        finally:
+    else:
         logging.info("Database already exists. Ensuring default users exist...")
         try:
             with sqlite3.connect(DATABASE) as conn:
                 add_default_users(conn)
+        except sqlite3.Error as db_error:
+            logging.error(f"SQLite error while adding default users: {db_error}")
+        except Exception as e:
+            logging.error(f"Unexpected error while ensuring default users: {e}")
 
 # Initialize the database
 initialize_database()
