@@ -43,7 +43,7 @@ VALUES
   ('Admin Testing', 'pbkdf2:sha256:600000$hashed_admin_password', 1, 'admin_api_key'),
   ('Docter Testing', 'pbkdf2:sha256:600000$hashed_doctor_password', 0, 'doctor_api_key');
 
--- Insert sample programs
+/* Insert sample programs */
 INSERT INTO programs (name, description)
 VALUES 
   ('TB', 'Tuberculosis Treatment Program'),
