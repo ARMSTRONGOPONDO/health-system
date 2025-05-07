@@ -36,9 +36,9 @@ CREATE TABLE enrollments (
   FOREIGN KEY (program_id) REFERENCES programs (id)
 );
 
--- Insert default admin user with password 'password'
+-- Insert default Admin user with password 'admin123'
 INSERT INTO users (username, password, api_key)
-VALUES ('admin', 'pbkdf2:sha256:150000$UpF5HKiF$c54f0e7396fc8f2b3c9b9cb362ca192afc6f6cef5761203fe825c9879b174f9c', 'test_api_key_12345');
+VALUES ('Admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'test_api_key_12345');
 
 -- Insert sample programs
 INSERT INTO programs (name, description)
