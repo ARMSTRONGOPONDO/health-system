@@ -4,11 +4,10 @@ DROP TABLE IF EXISTS programs;
 DROP TABLE IF EXISTS enrollments;
 
 CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  is_admin INTEGER NOT NULL DEFAULT 0,
-  api_key TEXT UNIQUE NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    api_key TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE clients (
@@ -38,10 +37,10 @@ CREATE TABLE enrollments (
 );
 
 /* Add default admin for testing */
-INSERT OR IGNORE INTO users (username, password, is_admin, api_key)
+INSERT OR IGNORE INTO users (username, password, api_key)
 VALUES 
-  ('Admin Testing', 'pbkdf2:sha256:600000$hashed_admin_password', 1, 'admin_api_key'),
-  ('Docter Testing', 'pbkdf2:sha256:600000$hashed_doctor_password', 0, 'doctor_api_key');
+  ('Admin Testing', 'pbkdf2:sha256:600000$hashed_admin_password', 'admin_api_key'),
+  ('Docter Testing', 'pbkdf2:sha256:600000$hashed_doctor_password', 'doctor_api_key');
 
 /* Insert sample programs */
 INSERT INTO programs (name, description)
