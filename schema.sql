@@ -7,6 +7,7 @@ CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   username TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL,
+  is_admin INTEGER NOT NULL DEFAULT 0,
   api_key TEXT UNIQUE NOT NULL
 );
 
@@ -36,9 +37,11 @@ CREATE TABLE enrollments (
   FOREIGN KEY (program_id) REFERENCES programs (id)
 );
 
--- Insert default Admin user with password 'admin123'
-INSERT INTO users (username, password, api_key)
-VALUES ('Admin', 'pbkdf2:sha256:600000$qvoMpgcrtOw3oPhi$9f59efa3f20add389ff33688f2f333368b69e20b72e33faa345eeab54a78b84b', 'test_api_key_12345');
+/* Add default admin for testing */
+INSERT OR IGNORE INTO users (username, password, is_admin, api_key)
+VALUES 
+  ('Admin Testing', 'pbkdf2:sha256:600000$hashed_admin_password', 1, 'admin_api_key'),
+  ('Docter Testing', 'pbkdf2:sha256:600000$hashed_doctor_password', 0, 'doctor_api_key');
 
 -- Insert sample programs
 INSERT INTO programs (name, description)
