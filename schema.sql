@@ -38,7 +38,9 @@ CREATE TABLE enrollments (
 
 -- Insert default Admin user with password 'admin123'
 INSERT INTO users (username, password, api_key)
-VALUES ('Admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'test_api_key_12345');
+VALUES ('Admin', 'pbkdf2:sha256:600000$qvoMpgcrtOw3oPhi$9f59efa3f20add389ff33688f2f333368b69e20b72e33faa345eeab54a78b84b
+ 
+', 'test_api_key_12345');
 
 -- Insert sample programs
 INSERT INTO programs (name, description)
