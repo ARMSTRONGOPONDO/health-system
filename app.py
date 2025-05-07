@@ -31,6 +31,8 @@ def initialize_database():
         try:
             if not os.path.exists(SCHEMA_PATH):
                 raise FileNotFoundError(f"Schema file not found: {SCHEMA_PATH}")
+            
+            # Create database and apply schema
             with sqlite3.connect(DATABASE) as conn:
                 with open(SCHEMA_PATH, 'r') as schema_file:
                     schema = schema_file.read()
@@ -38,17 +40,7 @@ def initialize_database():
                 logging.info("Database initialized successfully!")
                 
                 # Add default users
-                hashed_password = generate_password_hash("password", method="pbkdf2:sha256")
-                conn.execute(
-                    "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)",
-                    ("Docter Testing", hashed_password, 0)
-                )
-                conn.execute(
-                    "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)",
-                    ("Admin Testing", hashed_password, 1)
-                )
-                conn.commit()
-                logging.info("Default users added successfully!")
+                add_default_users(conn)
         except FileNotFoundError as fnf_error:
             logging.error(f"Error: {fnf_error}")
         except sqlite3.Error as db_error:
@@ -56,10 +48,35 @@ def initialize_database():
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
     else:
-        logging.info("Database already exists. Skipping initialization.")
+        logging.info("Database already exists. Ensuring default users exist...")
+        try:
+            with sqlite3.connect(DATABASE) as conn:
+                add_default_users(conn)
 
 # Initialize the database
 initialize_database()
+
+def add_default_users(conn):
+    """
+    Add default testing users to the database if they do not already exist.
+    """
+    try:
+        hashed_password = generate_password_hash("password", method="pbkdf2:sha256")
+        
+        # Insert default users only if they don't exist
+        conn.execute(
+            "INSERT OR IGNORE INTO users (username, password, is_admin, api_key) VALUES (?, ?, ?, ?)",
+            ("Docter Testing", hashed_password, 0, "doctor_api_key")
+        )
+        conn.execute(
+            "INSERT OR IGNORE INTO users (username, password, is_admin, api_key) VALUES (?, ?, ?, ?)",
+            ("Admin Testing", hashed_password, 1, "admin_api_key")
+        )
+        conn.commit()
+        logging.info("Default users added successfully!")
+    except sqlite3.Error as db_error:
+        logging.error(f"Error adding default users: {db_error}")
+        
 
 def get_db():
     """Get a database connection."""
@@ -130,13 +147,12 @@ def index():
 
 def get_user_by_username(username):
     """
-    Retrieve a user from the database by username.
+    Retrieve a user from the database by username. Makes the username case-insensitive.
     """
-    conn = get_db()  # Corrected here
+    conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT * FROM users WHERE LOWER(username) = LOWER(?)", (username,))
     user = cursor.fetchone()
-    conn.close()
     
     if user:
         # Convert to dictionary for easier access
@@ -144,7 +160,8 @@ def get_user_by_username(username):
             'id': user[0],
             'username': user[1],
             'password': user[2],
-            'is_admin': user[3]
+            'is_admin': user[3],
+            'api_key': user[4]
         }
         return user_dict
     return None
@@ -181,10 +198,10 @@ def login():
             flash('Invalid username or password', 'danger')
             return render_template('login.html')
             
-        # Create a user object for Flask-Login
-        user_obj = User(user['id'], user['username'])
-        login_user(user_obj)
-        
+        # Login successful
+        session['user_id'] = user['id']
+        session['username'] = user['username']
+        flash('Login successful!', 'success')
         return redirect(url_for('dashboard'))
         
     return render_template('login.html')
