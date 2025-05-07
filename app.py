@@ -67,11 +67,11 @@ def add_default_users(conn):
         
         # Insert default users only if they don't exist
         conn.execute(
-            "INSERT OR IGNORE INTO users (username, password, is_admin, api_key) VALUES (?, ?, ?, ?)",
+            "INSERT OR IGNORE INTO users (username, password, api_key) VALUES (?, ?, ?, ?)",
             ("Docter Testing", hashed_password, 0, "doctor_api_key")
         )
         conn.execute(
-            "INSERT OR IGNORE INTO users (username, password, is_admin, api_key) VALUES (?, ?, ?, ?)",
+            "INSERT OR IGNORE INTO users (username, password, api_key) VALUES (?, ?, ?, ?)",
             ("Admin Testing", hashed_password, 1, "admin_api_key")
         )
         conn.commit()
