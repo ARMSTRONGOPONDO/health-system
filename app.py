@@ -75,12 +75,11 @@ def index():
         return redirect(url_for('dashboard'))
     return render_template('index.html')
 
-# Add this function to your app.py file
 def get_user_by_username(username):
     """
-    Retrieve a user from the database by username
+    Retrieve a user from the database by username.
     """
-    conn = get_db_connection()
+    conn = get_db()  # Corrected here
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
     user = cursor.fetchone()
