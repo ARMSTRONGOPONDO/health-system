@@ -4,16 +4,51 @@ import sqlite3
 import os
 from functools import wraps
 import secrets
+import logging
 
 # Configuration
-DATABASE = 'health_system.db'
-SECRET_KEY = secrets.token_hex(16)
+DATABASE = os.getenv('DATABASE_URL', 'health_system.db')
+SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_hex(16))
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 
-# Database connection
+# Paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SCHEMA_PATH = os.path.join(BASE_DIR, 'schema.sql')
+
+# Logging Configuration
+logging.basicConfig(level=logging.INFO)
+
+# Database Setup
+def initialize_database():
+    """
+    Initialize the SQLite database if it doesn't exist by applying the schema.
+    """
+    if not os.path.exists(DATABASE):
+        logging.info("Database not found. Initializing...")
+        try:
+            if not os.path.exists(SCHEMA_PATH):
+                raise FileNotFoundError(f"Schema file not found: {SCHEMA_PATH}")
+            with sqlite3.connect(DATABASE) as conn:
+                with open(SCHEMA_PATH, 'r') as schema_file:
+                    schema = schema_file.read()
+                conn.executescript(schema)
+            logging.info("Database initialized successfully!")
+        except FileNotFoundError as fnf_error:
+            logging.error(f"Error: {fnf_error}")
+        except sqlite3.Error as db_error:
+            logging.error(f"SQLite error: {db_error}")
+        except Exception as e:
+            logging.error(f"Unexpected error: {e}")
+    else:
+        logging.info("Database already exists. Skipping initialization.")
+
+# Initialize the database
+initialize_database()
+
 def get_db():
+    """Get a database connection."""
     if 'db' not in g:
         g.db = sqlite3.connect(
             app.config['DATABASE'],
@@ -23,22 +58,26 @@ def get_db():
     return g.db
 
 def close_db(e=None):
+    """Close the database connection."""
     db = g.pop('db', None)
     if db is not None:
         db.close()
 
 def init_db():
+    """Initialize the database schema."""
     with app.app_context():
         db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.executescript(f.read())  
+        with app.open_resource(SCHEMA_PATH, mode='r') as f:
+            db.executescript(f.read())
 
+# CLI Commands
 @app.cli.command('init-db')
 def init_db_command():
     """Clear the existing data and create new tables."""
     init_db()
-    print('Initialized the database.')
+    logging.info('Initialized the database.')
 
+# Teardown Function
 app.teardown_appcontext(close_db)
 
 # Authentication
@@ -81,7 +120,7 @@ def get_user_by_username(username):
     """
     conn = get_db()  # Corrected here
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM user WHERE username = ?", (username,))
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     user = cursor.fetchone()
     conn.close()
     
