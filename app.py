@@ -47,7 +47,7 @@ def initialize_database():
             logging.error(f"SQLite error: {db_error}")
         except Exception as e:
             logging.error(f"Unexpected error: {e}")
-    else:
+        finally:
         logging.info("Database already exists. Ensuring default users exist...")
         try:
             with sqlite3.connect(DATABASE) as conn:
