@@ -42,8 +42,9 @@ jobs:
         pytest --cov=.
 
     # Step 6: Upload coverage report
+# Step 6: Upload coverage report
     - name: Upload coverage report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.1.0
       with:
         name: coverage-report
         path: coverage.xml
