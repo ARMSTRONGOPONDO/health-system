@@ -36,15 +36,15 @@ jobs:
         flake8 .
       continue-on-error: true  # Ensure workflow doesn't fail on flake8 issues
 
-    # Step 5: Run tests
-    - name: Run tests
+    # Step 5: Run tests with coverage
+    - name: Run tests with coverage
       run: |
-        pytest --cov=.
+        pip install pytest pytest-cov  # Ensure pytest-cov is installed
+        pytest --cov=. --cov-report=xml  # Generates coverage.xml
 
     # Step 6: Upload coverage report
-# Step 6: Upload coverage report
     - name: Upload coverage report
-      uses: actions/upload-artifact@v3.1.0
+      uses: actions/upload-artifact@v3.*
       with:
         name: coverage-report
         path: coverage.xml
