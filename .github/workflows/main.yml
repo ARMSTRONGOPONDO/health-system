@@ -43,12 +43,11 @@ jobs:
         flake8 . > flake8-report.txt || true
       continue-on-error: true
 
-    # Step 6: Upload coverage report
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-        name: coverage-report
-        path: coverage.xml
+        name: build-artifact
+        path: ./path-to-your-artifact
 
     # Step 7: Run unit tests
     - name: Run tests
