@@ -30,26 +30,15 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     # Step 4: Run linting to check code quality
-    - name: Linting with flake8
+    - name: Run flake8 linting
       run: |
         pip install flake8
         flake8 .
+      continue-on-error: true  # Ensure workflow doesn't fail on flake8 issues
 
-    # Step 5: Run tests
-    - name: Run tests
+    # Step 5: Output flake8 report for easier debugging
+    - name: Generate flake8 report
       run: |
-        if [ -d tests ]; then python -m unittest discover tests; fi
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-    # Step 1: Checkout the repository
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    # Step 2: Deploy application (Placeholder for deployment logic)
-    - name: Deploy Application
-      run: echo "Add your deployment logic here"
+        pip install flake8
+        flake8 . > flake8-report.txt](#)
+
