@@ -21,7 +21,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'  # Specify the Python version
+        python-version: '3.9'  # Adjust Python version if needed
 
     # Step 3: Install dependencies
     - name: Install dependencies
@@ -36,9 +36,20 @@ jobs:
         flake8 .
       continue-on-error: true  # Ensure workflow doesn't fail on flake8 issues
 
-    # Step 5: Output flake8 report for easier debugging
+    # Step 5: Generate and upload linting report
     - name: Generate flake8 report
       run: |
         pip install flake8
-        flake8 . > flake8-report.txt](#)
-
+        flake8 . > flake8-report.txt || true
+      continue-on-error: true
+
+    - name: Upload flake8 report
+      uses: actions/upload-artifact@v3
+      with:
+        name: flake8-report
+        path: flake8-report.txt
+
+    # Step 6: Run unit tests
+    - name: Run tests
+      run: |
+        if [ -d tests ]; then python -m unittest discover tests; fi
