@@ -43,13 +43,14 @@ jobs:
         flake8 . > flake8-report.txt || true
       continue-on-error: true
 
-    - name: Upload flake8 report
-      uses: actions/upload-artifact@v3
+    # Step 6: Upload coverage report
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v2
       with:
-        name: flake8-report
-        path: flake8-report.txt
+        name: coverage-report
+        path: coverage.xml
 
-    # Step 6: Run unit tests
+    # Step 7: Run unit tests
     - name: Run tests
       run: |
         if [ -d tests ]; then python -m unittest discover tests; fi
